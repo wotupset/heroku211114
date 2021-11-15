@@ -108,7 +108,7 @@ echo "\n";
 echo "捕捉錯誤測試"."\n\n";
 //try-catch 捕捉錯誤測試
 try{
-    $pgConn->exec ("QUERY WITH SYNTAX ERROR");//錯誤的語句
+    $pgConn->exec("QUERY WITH SYNTAX ERROR");//錯誤的語句
 }catch(PDOException $e){
 	//print_r($e);echo "\n";echo "\n";
 	//從拋出的錯誤 抓取錯誤碼
@@ -198,10 +198,347 @@ Array
 )
 */
 
+echo "建立table"."\n\n";
+$table_name="db211115_byPDO";
+//$stmt = $pgConn->query("DROP TABLE IF EXISTS {$table_name}");
+
+$sql=<<<EOT
+CREATE TABLE IF NOT EXISTS {$table_name} (
+ID SERIAL UNIQUE PRIMARY KEY,
+timestamp timestamp default current_timestamp,
+a01 text NOT NULL,
+z99 text
+);
+EOT;
+print_r($sql);
+echo "\n";
+//exec 不回傳
+//query 會回傳
+
+try{
+$stmt = $pgConn->exec( $sql );
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.建立table");
+}
+
+/*
+if( $pgConn->errorCode() != '00000'){
+	$FFF= $pgConn->errorInfo();
+	print_r($FFF[2]);
+	echo "\n\n";
+	exit("錯誤.建立table");
+}
+
+*/
+
+echo "列出非系統table"."\n";
+$sql=<<<EOT
+SELECT * FROM pg_catalog.pg_tables 
+WHERE schemaname = 'public';
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	echo $row[1];//tablename
+	echo "\n";
+}
+
+echo "table插入資料 方式1"."\n";
+
+try{
+$sql=<<<EOT
+INSERT INTO {$table_name} (a01,z99) VALUES(:a01,:z99);
+EOT;
+echo $sql;
+echo "\n";
+$stmt = $pgConn->prepare($sql);
+$stmt->bindValue(':a01', "aaaa");
+$stmt->bindValue(':z99', '9999');
+$stmt->execute();
+
+$stmt->bindValue(':a01', "aaaa第二次");
+$stmt->bindValue(':z99', '9999第二次');
+$stmt->execute();
+
+$FFF=[];
+$FFF=[':a01'=>'aaaa第三次',':z99'=>'9999第三次'];
+$stmt->execute($FFF);
+
+$FFF=[];
+$FFF[':a01']='aaaa第四次🤣9.0';
+$FFF[':z99']='9999第四次🧲11.0';
+$stmt->execute($FFF);
+
+for($i = 0; $i < 10; $i++) {
+$stmt->bindValue(':a01', "aaaa_批次新增".$i);
+$stmt->bindValue(':z99', '9999_批次新增'.$i);
+$stmt->execute();
+
+}
+
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.插入資料");
+}
+
+/*
+echo "列出資料"."\n";
+$sql=<<<EOT
+select * from {$table_name} 
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	print_r($row);
+	//echo $row[1];//tablename
+	echo "\n";
+}
+
+*/
+
+echo "table插入資料 方式2"."\n";
+
+try{
+$sql=<<<EOT
+INSERT INTO {$table_name} (a01,z99) VALUES('aa2','zz2');
+EOT;
+echo $sql;
+echo "\n";
+$stmt = $pgConn->query( $sql );
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.插入資料");
+}
+
+/*
+echo "列出資料"."\n";
+$sql=<<<EOT
+select * from {$table_name} 
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	print_r($row);
+	//echo $row[1];//tablename
+	echo "\n";
+}
+
+*/
+
+echo "table插入資料 方式3 (z99=空白)"."\n";
+
+try{
+$sql=<<<EOT
+INSERT INTO {$table_name} (a01) VALUES('aa3');
+EOT;
+echo $sql;
+echo "\n";
+$stmt = $pgConn->query( $sql );
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.插入資料");
+}
 
 
 
 
+echo "列出資料"."\n";
+$sql=<<<EOT
+select * from {$table_name} ORDER BY id DESC 
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	foreach($row as $k=>$v){
+		if( preg_match("/^[0-9]$/",$k) ){
+			echo $v.', ';
+		}
+	}
+	//echo $row[1];//tablename
+	echo "\n";
+}
+/*
+ORDER BY last_name DESC
+LIMIT 20 OFFSET 0
+ASC 由小至大排列
+DESC 由大至小排列
+*/
+/*
+Array
+(
+    [id] => 4
+    [0] => 4
+    [timestamp] => 2021-11-15 05:44:08.055701
+    [1] => 2021-11-15 05:44:08.055701
+    [a01] => aaaa第四次🤣9.0
+    [2] => aaaa第四次🤣9.0
+    [z99] => 9999第四次🧲11.0
+    [3] => 9999第四次🧲11.0
+)
+
+*/
+
+
+
+/*
+AVG() – return the average value.
+COUNT() – return the number of values.
+MAX() – return the maximum value.
+MIN() – return the minimum value.
+SUM() – return the sum of all or distinct values.
+https://www.postgresqltutorial.com/postgresql-aggregate-functions/
+*/
+//GREATST
+//LEAST
+//MAX
+//MIN
+// LIMIT 1
+echo "列出最舊的資料(1筆)"."\n";
+$sql=<<<EOT
+SELECT MIN(id) FROM {$table_name}
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	echo $row[0];
+	echo "\n";
+}
+
+//exit("終止");
+
+
+echo "table更新資料(最舊的id)"."\n";
+
+
+
+
+try{
+$sql=<<<EOT
+UPDATE {$table_name} SET a01 = '梨斗常常跟妹妹一起洗澡' 
+WHERE id IN (
+SELECT MIN(id) FROM {$table_name} 
+);
+EOT;
+echo $sql;
+echo "\n";
+$stmt = $pgConn->query( $sql );
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.刪除資料");
+}
+
+echo "列出資料"."\n";
+$sql=<<<EOT
+select * from {$table_name} ORDER BY id DESC 
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	foreach($row as $k=>$v){
+		if( preg_match("/^[0-9]$/",$k) ){
+			echo $v.', ';
+		}
+	}
+	//echo $row[1];//tablename
+	echo "\n";
+}
+
+
+//exit("終止");
+
+
+
+//SELECT id,a01,row_number() OVER () as rn FROM {$table_name} ORDER BY timestamp DESC ;
+echo "table刪除資料 方式2 ??依照時間 只保留十分鐘的資料"."\n";
+
+try{
+
+$sql=<<<EOT
+DELETE FROM {$table_name}
+WHERE timestamp < now() - interval '10 minutes'
+EOT;
+echo $sql;
+echo "\n";
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	print_r($row);
+	echo "\n";
+}
+
+
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.刪除資料");
+}
+
+echo "列出資料"."\n";
+$sql=<<<EOT
+select * from {$table_name} ORDER BY id DESC 
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	foreach($row as $k=>$v){
+		if( preg_match("/^[0-9]$/",$k) ){
+			echo $v.', ';
+		}
+	}
+	//echo $row[1];//tablename
+	echo "\n";
+}
+
+echo "列出第10筆之後的資料"."\n";
+$sql=<<<EOT
+select id from {$table_name} ORDER BY id DESC offset 10
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	echo $row[0];
+	echo "\n";
+}
+
+
+//exit("終止");
+
+echo "table刪除資料 方式3 ??刪除第10筆之後的資料"."\n";
+try{
+$sql=<<<EOT
+DELETE FROM {$table_name}
+WHERE id IN (
+select id from {$table_name} ORDER BY id DESC offset 10
+);
+EOT;
+echo $sql;
+echo "\n";
+$stmt = $pgConn->query( $sql );
+
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.插入資料");
+}
+
+echo "列出資料"."\n";
+$sql=<<<EOT
+select * from {$table_name} ORDER BY id DESC 
+EOT;
+$stmt = $pgConn->query( $sql );
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	foreach($row as $k=>$v){
+		if( preg_match("/^[0-9]$/",$k) ){
+			echo $v.', ';
+		}
+	}
+	//echo $row[1];//tablename
+	echo "\n";
+}
 
 exit("結束");
 
