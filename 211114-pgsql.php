@@ -34,6 +34,44 @@ $FFF=pg_connection_string();
 
 $pg_conn = pg_connect( $FFF );//資料庫連線
 
+$FFF=pg_version($pg_conn);
+echo "pg_version=";
+print_r($FFF['client']);
+echo "\n";
+/*
+Array
+(
+    [client] => 14.0
+    [protocol] => 3
+    [server] => 13.4 (Ubuntu 13.4-4.pgdg20.04+1)
+    [server_encoding] => UTF8
+    [client_encoding] => UTF8
+    [is_superuser] => off
+    [session_authorization] => jgjcxqhsnyzxup
+    [DateStyle] => ISO, MDY
+    [IntervalStyle] => postgres
+    [TimeZone] => Etc/UTC
+    [integer_datetimes] => on
+    [standard_conforming_strings] => on
+    [application_name] => 
+)
+*/
+ 
+$FFF = pg_connection_status($pg_conn);
+echo "pg_connection_status=";
+print_r($FFF);
+echo "\n";
+if($stat){exit;}
+
+$FFF = pg_connection_busy($pg_conn);
+echo "pg_connection_busy=";
+print_r($FFF);
+echo "\n";
+if($stat){exit;}
+
+
+
+
 echo "捕捉錯誤測試"."\n\n";
 //try-catch 捕捉錯誤測試
 /*
@@ -61,6 +99,10 @@ if($FFF){
 }
 
 
+
+
+/*
+
 if (!pg_connection_busy( $pg_conn )) { //???
 	//
 	//echo pg_last_notice($pg_conn);//??連線中的最後一條通知??
@@ -86,6 +128,8 @@ if (!pg_connection_busy( $pg_conn )) { //???
 
 	echo "\n\n";
 }
+
+*/
 
 
 //exit("結束");
@@ -164,6 +208,9 @@ if($FFF){
 	echo pg_result_error($result);//錯誤訊息 跟pg_last_error相同
 	echo "\n";
 }
+
+
+
 
 echo "列出非系統table"."\n";
 $sql=<<<EOT
