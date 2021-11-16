@@ -34,6 +34,17 @@ echo $html2;
 exit('');
 }
 
+$chk = 'poi211118';
+$chat_cookie = $_COOKIE['chat_cookie'];
+if( password_verify( $chk ,  $chat_cookie ) ){
+	//echo "yy"."\n";
+}else{
+	//echo "nn"."\n";
+	exit("錯誤.cookie");
+}//if
+
+
+
 
 
 
