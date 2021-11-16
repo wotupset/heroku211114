@@ -183,8 +183,12 @@ Array
 
 //exit("結束");
 echo "建立table"."\n\n";
-$table_name="db211115_byPCN";
+//$table_name="db211115_byPCN";//pgsql有大小寫的問題 建議使用全小寫
+$table_name="db211115_bypcn";//pgsql有大小寫的問題 建議使用全小寫
 //$result = pg_query($pg_conn, "DROP TABLE IF EXISTS {$table_name}" );//移除table
+//exit('結束');
+
+
 
 $sql=<<<EOT
 CREATE TABLE IF NOT EXISTS {$table_name} (

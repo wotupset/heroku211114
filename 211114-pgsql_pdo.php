@@ -155,6 +155,7 @@ Array
     [client_encoding] => UTF8
     [0] => UTF8
 )
+https://www.postgresql.org/docs/9.3/multibyte.html
 */
 
 echo "列出所有table"."\n\n";
@@ -199,8 +200,13 @@ Array
 */
 
 echo "建立table"."\n\n";
-$table_name="db211115_byPDO";
+//$table_name="db211115_byPDO";//pgsql有大小寫的問題 建議使用全小寫
+$table_name="db211115_bypdo";//pgsql有大小寫的問題 建議使用全小寫
 //$stmt = $pgConn->query("DROP TABLE IF EXISTS {$table_name}");
+
+//exit('結束');
+
+
 
 $sql=<<<EOT
 CREATE TABLE IF NOT EXISTS {$table_name} (
@@ -232,6 +238,148 @@ if( $pgConn->errorCode() != '00000'){
 }
 
 */
+
+
+
+echo "列出table欄位"."\n\n";
+$sql=<<<EOT
+SELECT
+	table_name,
+	column_name,
+	data_type
+FROM
+	information_schema.columns
+WHERE
+	table_schema = 'public'
+ORDER BY table_name ASC 
+EOT;
+print_r($sql);
+echo "\n";
+try{
+$stmt = $pgConn->query( $sql );
+
+
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.列出table欄位");
+}
+
+while($row = $stmt->fetch() ){
+	//print_r($row);
+	if( $row[0] == strtolower($table_name) ){
+		foreach($row as $k=>$v){
+			if( preg_match("/^[0-9]$/",$k) ){
+				echo $v.', ';
+			}
+		}
+		echo "\n";
+	}else{
+		continue;
+	}
+
+}
+
+
+/*
+Array
+(
+    [table_catalog] => d3dabjnt5ntia9
+    [0] => d3dabjnt5ntia9
+    [table_schema] => public
+    [1] => public
+    [table_name] => db211115_bypcn
+    [2] => db211115_bypcn
+    [column_name] => id
+    [3] => id
+    [ordinal_position] => 1
+    [4] => 1
+    [column_default] => nextval('db211115_bypcn_id_seq'::regclass)
+    [5] => nextval('db211115_bypcn_id_seq'::regclass)
+    [is_nullable] => NO
+    [6] => NO
+    [data_type] => integer
+    [7] => integer
+    [character_maximum_length] => 
+    [8] => 
+    [character_octet_length] => 
+    [9] => 
+    [numeric_precision] => 32
+    [10] => 32
+    [numeric_precision_radix] => 2
+    [11] => 2
+    [numeric_scale] => 0
+    [12] => 0
+    [datetime_precision] => 
+    [13] => 
+    [interval_type] => 
+    [14] => 
+    [interval_precision] => 
+    [15] => 
+    [character_set_catalog] => 
+    [16] => 
+    [character_set_schema] => 
+    [17] => 
+    [character_set_name] => 
+    [18] => 
+    [collation_catalog] => 
+    [19] => 
+    [collation_schema] => 
+    [20] => 
+    [collation_name] => 
+    [21] => 
+    [domain_catalog] => 
+    [22] => 
+    [domain_schema] => 
+    [23] => 
+    [domain_name] => 
+    [24] => 
+    [udt_catalog] => d3dabjnt5ntia9
+    [25] => d3dabjnt5ntia9
+    [udt_schema] => pg_catalog
+    [26] => pg_catalog
+    [udt_name] => int4
+    [27] => int4
+    [scope_catalog] => 
+    [28] => 
+    [scope_schema] => 
+    [29] => 
+    [scope_name] => 
+    [30] => 
+    [maximum_cardinality] => 
+    [31] => 
+    [dtd_identifier] => 1
+    [32] => 1
+    [is_self_referencing] => NO
+    [33] => NO
+    [is_identity] => NO
+    [34] => NO
+    [identity_generation] => 
+    [35] => 
+    [identity_start] => 
+    [36] => 
+    [identity_increment] => 
+    [37] => 
+    [identity_maximum] => 
+    [38] => 
+    [identity_minimum] => 
+    [39] => 
+    [identity_cycle] => NO
+    [40] => NO
+    [is_generated] => NEVER
+    [41] => NEVER
+    [generation_expression] => 
+    [42] => 
+    [is_updatable] => YES
+    [43] => YES
+)
+*/
+
+//https://www.postgresqltutorial.com/postgresql-describe-table/
+
+//exit('終止');
+
+
 
 echo "列出非系統table"."\n";
 $sql=<<<EOT
@@ -271,7 +419,7 @@ $FFF[':a01']='aaaa第四次🤣9.0';
 $FFF[':z99']='9999第四次🧲11.0';
 $stmt->execute($FFF);
 
-for($i = 0; $i < 10; $i++) {
+for($i = 0; $i < 5; $i++) {
 $stmt->bindValue(':a01', "aaaa_批次新增".$i);
 $stmt->bindValue(':z99', '9999_批次新增'.$i);
 $stmt->execute();
