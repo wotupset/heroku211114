@@ -97,7 +97,7 @@ for($i=1; $i<=$all_page; $i++){
 	$FFF.="\n";
 	$page_bar=$page_bar.$FFF;
 }
-$FFF="<a href='./211116-chat_post.php'>[主頁]</a> ";
+$FFF="<a href='./211116-chat_post.php'>[共".$rows_max."篇]</a> ";
 $page_bar=$FFF.$page_bar;
 //echo $page_bar;
 
@@ -154,82 +154,7 @@ echo $html2;
 
 //exit('結束');
 exit('');
-/*
-Array
-(
-    [id] => 344
-    [0] => 344
-    [timestamp] => 2021-11-16 13:24:30.102453
-    [1] => 2021-11-16 13:24:30.102453
-    [a01] => 標題是權力遊戲 權鬥深度卻很弱<br/>洋屌是不是不懂權鬥的奧妙啊 難道逼我去看古早陸劇？
-    [2] => 標題是權力遊戲 權鬥深度卻很弱<br/>洋屌是不是不懂權鬥的奧妙啊 難道逼我去看古早陸劇？
-    [z99] => 1
-    [3] => 1
-)
 
-*/
 
-//echo "列出資料"."\n";
-$sql=<<<EOT
-select * from {$table_name} ORDER BY id DESC LIMIT 100
-EOT;
-//print_r($sql);
-//echo "\n";
-try{
-$stmt = $pgConn->query( $sql );
-}catch(PDOException $e){
-	print_r($e->getCode());//method public
-	print_r($e->getMessage());//method public
-	exit("錯誤.建立table");
-}
-
-$FFF='';
-$cc=0;
-while($row = $stmt->fetch() ){
-	$cc++;
-	if( $cc % 2 ){
-		//1
-		$FFF.='<div id=box'.$cc.' style="">';
-	}else{
-		//0
-		$FFF.="<div id=box".$cc.">";
-	}
-	$FFF.='<dt>'.$row[0].', '.$row[1]."</dt>"."\n";
-	$FFF.="<dd>".$row[2]."</dd>"."\n";
-	$FFF.="❀</div>";
-}
-
-$html=$FFF;
-
-$html_post=<<<EOT
-<form id='form1' action='./211116-chat_post2.php' method='post'  autocomplete="off">
-
-<textarea name="text" id="id_text" cols="48" rows="4" wrap=soft></textarea>
-<div style="display:inline-block;vertical-align:top;" >
-內文<br/>
-<input type="submit" value="送出"/>⚜
-</div>
-</form>
-
-EOT;
-$html2=<<<EOT
-<html>
-<head>
-<title></title>
-<style>
-dl div:nth-child(odd){
-	background-color:#CCFFFF;
-}
-
-</style>
-</head>
-<body>
-<dl>
-$html
-</dl>
-</body>
-<html>
-EOT;
-echo $html2;
 
 ?>

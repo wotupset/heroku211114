@@ -99,7 +99,7 @@ $html_post=<<<EOT
 <input type="submit" value="送出"/>⚜
 </div>
 </form>
-[最新50篇] <a href="./211116-chat_list_all.php">[全部]</a>
+<a href="./211116-chat_list_all.php">[最新50篇]</a>
 EOT;
 $html2=<<<EOT
 <html>
