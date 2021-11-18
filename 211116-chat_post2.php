@@ -8,8 +8,11 @@ header("refresh:4; url=./211116-chat_post.php");
 //ob_start();
 
 $chk = 'poi211118';
-$chat_cookie = $_COOKIE['chat_cookie'];
-if( password_verify( $chk ,  $chat_cookie ) ){
+//$chat_cookie = $_COOKIE['chat_cookie'];
+$pw_hash = $_POST['pw_hash'];
+//echo $chat_cookie;
+//print_r($_POST);
+if( password_verify( $chk ,  $pw_hash ) ){
 	//echo "yy"."\n";
 }else{
 	//echo "nn"."\n";
@@ -68,12 +71,14 @@ $table_name="db211116_chat";
 
 
 
-extract($_POST,EXTR_SKIP);
+//extract($_POST,EXTR_SKIP);
 //print_r($_POST);
 $post_text=$_POST['text'];//處理傳進來的字串
 if($post_text==''){
 	exit('結束.空的資料');
 }
+
+
 
 function text_fix($in1){
 	$tmp_xx=$in1;
@@ -89,12 +94,44 @@ function text_fix($in1){
 	return $tmp_xx;
 }//fc
 
-$post_text=text_fix($post_text);
+$post_text=text_fix($post_text); //修整過的字串
 echo $post_text;
+//echo md5($post_text);
+echo "\n";
 
 
+//比對
+
+$sql=<<<EOT
+SELECT * FROM {$table_name} ORDER BY id DESC LIMIT 10
+EOT;
+//echo $sql;
+//echo "\n";
+
+try{
+$stmt = $pgConn->query( $sql );
+}catch(PDOException $e){
+	print_r($e->getCode());//method public
+	print_r($e->getMessage());//method public
+	exit("錯誤.插入資料");
+}//try-catch
+
+//取出最新10筆
+while($row = $stmt->fetch() ){
+	//echo $row[2];
+	//echo md5($row[2]);
+	//echo "\n";
+	if( md5($post_text) == md5($row[2]) ){
+		echo '重複的發文';
+		echo "\n";
+		exit('終止');
+	}
+}
+
+//exit('終止');
 
 
+//插入
 try{
 
 $sql=<<<EOT
@@ -128,7 +165,7 @@ while($row = $stmt->fetch() ){
 	exit("錯誤.插入資料");
 }//try-catch
 
-exit('終止');
+exit('結束.成功插入資料');
 
 //echo "table刪除資料 方式3 ??刪除第10筆之後的資料"."\n";
 try{

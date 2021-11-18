@@ -90,14 +90,23 @@ while($row = $stmt->fetch() ){
 
 $html=$FFF;
 
+$chat_cookie = $_COOKIE['chat_cookie'];
 $html_post=<<<EOT
-<form id='form1' action='./211116-chat_post2.php' method='post'  autocomplete="off">
-<input type="hidden" name="mode" value="reg">
-<textarea name="text" id="id_text" cols="48" rows="4" wrap=soft></textarea>
+<form id='form1' action='./211116-chat_post2.php' method='post'  autocomplete="on">
 <div style="display:inline-block;vertical-align:top;" >
-內文<br/>
-<input type="submit" value="送出"/>⚜
+<input type="hidden" name="mode" value="reg">
+<textarea name="text" id="id_text" cols="48" rows="4" wrap=soft placeholder="內文"></textarea>
+<br/>
+<input type="submit" id="input_submit" value="送出"/>⚜
+
 </div>
+<div style="display:inline-block;vertical-align:top;" >
+<input type="password" name="pw_hash" id="pw_hash" maxlength="60" size="16"  value="$chat_cookie"  />
+</div>
+
+
+
+
 </form>
 <a href="./211116-chat_list_all.php">[最新50篇]</a>
 EOT;
@@ -109,7 +118,14 @@ $html2=<<<EOT
 dl div:nth-child(odd){
 	background-color:#CCFFFF;
 }
-
+#input_submit {
+    width: 100px;
+    height: 50px;
+}
+#pw_hash {
+    width: 100px;
+    height: 50px;
+}
 </style>
 </head>
 <body>

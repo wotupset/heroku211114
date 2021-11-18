@@ -1,1 +1,2 @@
 cmd
+heroku restart

@@ -1,6 +1,6 @@
 <?php
 //header('Content-Type: application/javascript; charset=utf-8');
-//header('Content-type: text/html; charset=utf-8');
+header('Content-type: text/html; charset=utf-8');
 //**************
 extract($_POST,EXTR_SKIP);//接受post
 //header('Content-type: text/html; charset=utf-8');
@@ -95,7 +95,7 @@ if(function_exists("password_hash")){
 }
 echo "\n";
 echo "crypt\t\t\t\t";
-echo crypt($date);
+echo crypt($date,'salt');
 echo "\n";
 
 echo "UUID/GUID:\t\t\t";
@@ -107,10 +107,15 @@ $tmp.=xxx("aa","bb");
 echo $tmp;
 echo "\n";
 
-require './Discuz_AzDGCrypt.php';//載入加密用函式
 echo "Discuz_AzDGCrypt: \t\t";
+try{
+require './Discuz_AzDGCrypt.php';//載入加密用函式
 echo $echo=azdg_encode($time,$time);
 echo "\n";
+}catch($e){
+echo "不支援";
+}
+
 
 echo "base64_encode(gz):\t\t";
 if(function_exists("gzdeflate")){
