@@ -41,10 +41,14 @@ $table_name="db211116_chat";
 
 
 $sql=<<<EOT
-UPDATE {$table_name}
-SET a01 = '更新=='
-WHERE id='318'
-RETURNING *
+UPDATE 
+	{$table_name}
+SET 
+	a01 = '更新==320'
+WHERE 
+	id='320'
+RETURNING 
+	*
 EOT;
 echo $sql;
 echo "\n";
