@@ -98,7 +98,7 @@ foreach($words as $k => $v){
 
 $sql=<<<EOT
 SELECT * FROM {$table_name}
-WHERE id > 0 $sql_find_word  ORDER BY id DESC LIMIT 10;
+WHERE id > 0 $sql_find_word  ORDER BY id DESC LIMIT 50;
 EOT;
 //print_r($sql);
 //echo "\n";
