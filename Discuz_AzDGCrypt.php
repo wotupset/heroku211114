@@ -97,6 +97,9 @@ function passport_encode($array) {
 	
 }
 
+
+
+
 function azdg_encode($a1,$a2){
 	//$a1 = input
 	//$a2 = key
@@ -111,10 +114,28 @@ function azdg_decode($a1,$a2){
 	$x= $decrypt;
 	return $x;
 }
-switch($azdg){
-	case 'a':
-	break;
-	default:
-	break;
-}
+
+function zh211123(){
+	$php_info=pathinfo($_SERVER["PHP_SELF"]);//被執行的文件檔名	
+	//print_r($php_info);
+	$phpself=$php_info['basename'];
+
+	if($phpself == 'Discuz_AzDGCrypt.php'){
+		$FFF='';
+		echo $FFF=passport_encrypt('中文'.time(),'key123');	
+		//echo $FFF=passport_decrypt('ALgHuw6nU7EEwQGABThQYVZnVWUOa1UwAWoAMVE1UmI=','key123');	
+		echo $FFF=passport_decrypt( $FFF ,'key123');	
+		//
+		exit('結束');
+	}else{
+		//
+	}
+}//poi211123()
+zh211123();
+
+
+
+
+///
+
 ?>

@@ -1,6 +1,11 @@
 <?php
 //header('Content-Type: application/javascript; charset=utf-8');
 header('Content-type: text/html; charset=utf-8');
+
+//exit('結束');
+
+
+
 //**************
 extract($_POST,EXTR_SKIP);//接受post
 //header('Content-type: text/html; charset=utf-8');
@@ -14,6 +19,11 @@ $GLOBALS['time']=$time;
 $GLOBALS['date']=date("y/m/d H:i:s", $time);//年月
 define("_def_DATE", $GLOBALS['date']);//UNIX時間時區設定
 //**************
+ 
+//exit('結束');
+
+
+
 
 
 
@@ -32,6 +42,11 @@ $weeklist = array('日', '一', '二', '三', '四', '五', '六');
 $weekday = '('.$weeklist[$weekday].')';
 echo date("Y/m/d", $time).$weekday;
 echo "\n";
+
+//exit('結束');
+
+
+
 
 
 echo "ymdHis: \t\t\t";
@@ -68,6 +83,10 @@ echo "\n";
 echo "uniqid_substr: \t\t\t";
 echo substr($uid,0,8);//建立唯一ID
 
+//exit('結束');
+
+
+
 
 
 echo "\n";
@@ -87,78 +106,24 @@ echo "\n";
 echo "sha1:\t\t\t\t";
 echo sha1($date);
 echo "\n";
+
 echo "password_hash\t\t\t";
 if(function_exists("password_hash")){
 	echo password_hash($date,PASSWORD_DEFAULT);
 }else{
 	echo "不支援";
 }
-echo "\n";
-echo "crypt\t\t\t\t";
-echo crypt($date,'salt');
-echo "\n";
-
-echo "UUID/GUID:\t\t\t";
-echo $echo=xxx(8,"xoo")."-".xxx(4,"oxx")."-".xxx(4,"xox")."-".xxx(4,"xxo")."-".xxx(12,"oxo");
-echo "\n";
-
-$tmp="自訂函數A:\t\t\t";//
-$tmp.=xxx("aa","bb");
-echo $tmp;
-echo "\n";
-
-echo "Discuz_AzDGCrypt: \t\t";
-try{
-require './Discuz_AzDGCrypt.php';//載入加密用函式
-echo $echo=azdg_encode($time,$time);
-echo "\n";
-}catch($e){
-echo "不支援";
-}
 
 
-echo "base64_encode(gz):\t\t";
-if(function_exists("gzdeflate")){
-	echo $echo=base64_encode(gzdeflate($time));//gzinflate( base64_decode(
-}else{
-	echo "不支援";
-}
-echo "\n";
 
-echo "自訂函數rdm_str:::\t\t";
-echo rdm_str();
-echo "\n";
+//exit('結束');
 
-echo "自訂函數html_entity:\t\t";
-echo $html_entity=html_entity_extA_rand(6)."".html_entity_rand(6);;
-echo "\n";
 
-$htmlbody = ob_get_contents();
-ob_end_clean(); 
-//**************
-$htmlbody=<<<EOT
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta http-equiv="Content-Language" content="zh-tw">
-</head>
-<body>
-<pre>
-$htmlbody
-</pre>
-</body>
-</html>
-EOT;
+//echo "\n";
+//echo "crypt\t\t\t\t";
+//echo crypt($date,'salt_abc');
+//echo "\n";
 
-echo $htmlbody;
-//**************
-function rdm_str($x=''){
-	for($i=0;$i<3;$i++){
-		$x=$x.chr(rand(48,57)).chr(rand(65,90)).chr(rand(97,122)); //
-	}
-	return $x;
-}
-//**************
 function xxx($n,$f){
 	if(preg_match("/[0-9]+/",$n)){}else{$n=16;}
 	if(preg_match("/[a-z]{3}?/",$f)){}else{$f="ooo";}
@@ -196,7 +161,41 @@ function xxx($n,$f){
 	}
 	return $tmp;
 }
-//**************
+
+echo "\n";
+
+echo "UUID/GUID:\t\t\t";
+echo $echo=xxx(8,"xoo")."-".xxx(4,"oxx")."-".xxx(4,"xox")."-".xxx(4,"xxo")."-".xxx(12,"oxo");
+echo "\n";
+
+$tmp="自訂函數A:\t\t\t";//
+$tmp.=xxx("aa","bb");
+echo $tmp;
+echo "\n";
+
+echo "base64_encode(gz):\t\t";
+if(function_exists("gzdeflate")){
+	echo $echo=base64_encode(gzdeflate($time));//gzinflate( base64_decode(
+}else{
+	echo "不支援";
+}
+echo "\n";
+
+//exit('結束');
+
+
+function rdm_str($x=''){
+	for($i=0;$i<3;$i++){
+		$x=$x.chr(rand(48,57)).chr(rand(65,90)).chr(rand(97,122)); //
+	}
+	return $x;
+}
+echo "自訂函數rdm_str:::\t\t";
+echo rdm_str();
+echo "\n";
+
+
+
 function html_entity_extA_rand($n){
 	$s='';
 	for($x=0;$x<$n;$x++){
@@ -224,35 +223,50 @@ function html_entity_rand($n){
 	return $s;
 }
 //
-//**************
-function htmlhead(){
-$title=_def_DATE;
-$x=<<<EOT
-<html><head>
-<title>$title</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<META http-equiv="Content-Script-Type" content="text/javascript">
-<META http-equiv="Content-Style-Type" content="text/css">
-<meta name="Robots" content="noindex,follow">
-<STYLE TYPE="text/css"><!--
-body2 { font-family:"細明體",'MingLiU'; }
---></STYLE>
-</head>
-<body bgcolor="#FFFFEE" text="#800000" link="#0000EE" vlink="#0000EE">
-EOT;
-$x="\n".$x."\n";
-return $x;
-}
-//echo htmlhead();
 
-function htmlend(){
-$x=<<<EOT
-</body></html>
+
+echo "自訂函數html_entity:\t\t";
+echo $html_entity=html_entity_extA_rand(6)."".html_entity_rand(6);;
+echo "\n";
+
+
+
+
+
+
+$htmlbody = ob_get_contents();
+ob_end_clean(); 
+
+///
+
+$htmlbody=<<<EOT
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="zh-tw">
+</head>
+<body>
+<pre>
+$htmlbody
+</pre>
+</body>
+</html>
 EOT;
-$x="\n".$x."\n";
-return $x;
-}
-//echo htmlend();
+
+echo $htmlbody;
+
+
+
+
+
+
+//print_r($time);
+
+
+
+
+
+
 
 
 ?>
