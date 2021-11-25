@@ -60,7 +60,7 @@ $table_name="db211116_chat";
 //$show_new = 50;//最新頁秀出?筆資料
 //echo "列出資料"."\n";
 $sql=<<<EOT
-select * from {$table_name} ORDER BY id DESC LIMIT 50
+select * from {$table_name} ORDER BY id DESC LIMIT 25
 EOT;
 //print_r($sql);
 //echo "\n";

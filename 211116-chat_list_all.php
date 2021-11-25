@@ -57,8 +57,9 @@ $table_name="db211116_chat";
 
 //exit('結束');
 $sql=<<<EOT
-SELECT * FROM {$table_name} ORDER BY id DESC
+SELECT * FROM {$table_name} ORDER BY id ASC
 EOT;
+//DESC
 try{
 $stmt = $pgConn->query( $sql );
 }catch(PDOException $e){
@@ -83,8 +84,9 @@ if( $page >0 ){
 //echo $all_page;
 //echo "\n";
 
-if($page>$all_page || $page<0){die('頁數有誤1');}
-if( !preg_match("/[0-9]+/",$page) ){die('頁數有誤2');}
+if( preg_match("/[^0-9]/",$page) ){die('錯誤.頁數=數字');}
+if($page>$all_page || $page<0){die('錯誤.頁數範圍');}
+
 
 //利用迴圈列出所有頁數
 $page_bar='';
@@ -92,10 +94,10 @@ for($i=1; $i<=$all_page; $i++){
 	//1開始
 	$FFF='';
 	$FFF.='<a href="./211116-chat_list_all.php?page='.$i.'">';
-	$FFF.="[p".($i)."]";
+	$FFF.="[".($i * 100 )."內]";
 	$FFF.='</a>';
 	$FFF.="\n";
-	$page_bar=$page_bar.$FFF;
+	$page_bar=$FFF.$page_bar;//數字多的在前
 }
 $FFF="<a href='./211116-chat_post.php'>[共".$rows_max."篇]</a> ";
 $page_bar=$FFF.$page_bar;
@@ -113,21 +115,25 @@ $num_end = ($page-1)*$show_rows + $show_rows;
 //利用迴圈列出頁數內的資料
 //$FFF=$row = $stmt->fetch();
 //print_r($FFF);
-$FFF='';
+//$FFF='';
+$page_text='';
 $cc=0;
 while($row = $stmt->fetch() ){
 	//$row[0] =>id
 	//1開始
 	$cc++;
-	if( ($cc >= $num_start)&&($cc < $num_end) ){
+	$FFF='';
+	if( ($cc > $num_start)&&($cc <= $num_end) ){
 		$FFF.="<div id=box".$cc.">";
+		//$FFF.=$cc;//
 		$FFF.='<dt>'.$row[0].', '.$row[1]."</dt>"."\n";
 		$FFF.="<dd>".$row[2]."</dd>"."\n";
 		$FFF.="❀</div>";
 	}
+	$page_text=$FFF.$page_text;//數字多的在前 ASC
 
 }
-$html=$FFF;
+$html=$page_text;
 
 
 $html2=<<<EOT
